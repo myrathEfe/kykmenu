@@ -1,129 +1,128 @@
-Mevcut Spring Boot + Thymeleaf KYK Menü Sistemi projesinde UI/UX düzeltmesi yap. Mevcut backend yapısını, entity/repository/service/controller akışını bozma. Sadece gerekli controller/model attribute, Thymeleaf, CSS ve JS düzenlemelerini yap.
+Mevcut Spring Boot + Thymeleaf KYK Menü Sistemi projesinde SADECE aşağıdaki 3 problemi düzelt. Backend mimarisini, CRUD akışını, entity/repository/service yapısını ve çalışan sayfaları bozma. Büyük refactor yapma.
 
-Amaç:
-Ekran tasarımını modern, lacivert ağırlıklı, temiz ve profesyonel bir dashboard görünümüne çekmek. Yeşil tema tamamen kaldırılacak.
+1. Menü kartına / resme tıklayınca yanlış detay sayfasına gitme sorunu
+- Dashboard’daki “Bugünün Menüleri” kartlarında resme veya karta tıklanınca doğru menü detayına gitmeli.
+- Her kart kendi menu.id değerini kullanmalı.
+- Thymeleaf içinde link şu mantıkta olmalı:
+  th:href="@{/menus/{id}(id=${menu.id})}"
+- Resim endpoint’i ile detay endpoint’i karışmamalı.
+- Resim için:
+  th:src="@{/menus/image/{id}(id=${menu.id})}"
+- Detay linki için:
+  th:href="@{/menus/{id}(id=${menu.id})}"
+- Döngü içinde yanlış index, sabit id, todayMenus[0], first item veya hatalı değişken kullanımı varsa düzelt.
+- Kartın tamamı link yapılacaksa her kart kendi menu.id’sine göre yönlenmeli.
 
-1. Genel tema
-- Tüm sayfalardaki yeşil renkleri kaldır.
-- Ana tema lacivert / koyu mavi tonlarında olsun.
-- Önerilen renkler:
-  - Primary: #0B1F4D
-  - Secondary: #1E3A8A
-  - Accent: #2563EB
-  - Background light: #F8FAFC
-  - Background dark: #07172A
-  - Card: #FFFFFF
-  - Text dark: #0F172A
-  - Text muted: #64748B
-- Navbar, butonlar, kartlar, linkler, hover efektleri bu temaya uygun olsun.
-- Bootstrap yapısını bozma, sadece custom CSS ile override et.
+2. Hover sırasında resimlerin titreme / zıplama problemi
+- Menü kartlarında mouse hover olunca tüm resimler titrememeli.
+- Hover efekti sadece kartın kendisine hafif uygulanmalı.
+- Resimlere ayrı ayrı scale/transform verme.
+- Aynı anda hem card hem image üzerinde transform varsa kaldır.
+- Kullanılacak güvenli hover:
+  .menu-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    overflow: hidden;
+  }
 
-2. Tema butonu
-- Sağ üstteki mevcut kötü görünen tema butonunu tamamen düzelt.
-- Buton küçük, modern, yatay switch/toggle şeklinde olsun.
-- İçinde güneş ve ay ikonu olsun.
-- “Tema” yazısı görünmesin.
-- Light/dark mode gerçekten çalışsın.
-- Seçilen tema localStorage’da saklansın.
-- Sayfa yenilenince seçilen tema korunmalı.
-- Dark mode’da navbar, body, card, input, table, button, modal gibi alanlar düzgün görünmeli.
-- Tema toggle tüm sayfalarda aynı yerde ve aynı tasarımda olmalı.
+  .menu-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.16);
+  }
 
-3. Dashboard tarih başlığı düzeltmesi
-Dashboard sayfasında şu an “null Günü Yemek Listesi” yazıyor. Bunu düzelt.
-Sebep muhtemelen controller’dan tarih attribute’u gelmiyor veya Thymeleaf yanlış değişken kullanıyor.
+  .menu-card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    transform: none;
+    transition: none;
+  }
 
-İstenen çıktı:
-“08/05/26 Günü Yemek Listesi”
+  .menu-card:hover img {
+    transform: none;
+  }
 
-Kurallar:
-- Tarih dinamik olmalı.
-- LocalDate.now() kullanılabilir.
-- Format dd/MM/yy olacak.
-- Controller içinde formattedTodayDate gibi bir model attribute gönder.
-- Thymeleaf’te null göstermeyecek şekilde kullan.
-- Eğer tarih gelmezse fallback olarak bugünün tarihi JS ile değil, mümkünse backend’den gelsin.
+- Eğer a etiketi, image-wrapper veya card içinde çakışan hover transform varsa temizle.
+- Hover sırasında layout shift olmamalı.
+- Kart yüksekliği sabit ve stabil olmalı.
 
-4. Dashboard hero/header alanı
-Mevcut hero alanını silme, layout’u bozma.
-Sadece metinleri düzenle.
+3. Dark mode ve lacivert tema renklerini düzelt
+Şu an dark mode’da bazı alanlar soluk, okunması zor veya renkler uyumsuz görünüyor. Bunu düzelt.
 
-- “ÖĞRENCİ PANELİ” yazısı görünmesin.
-- Ana başlık:
-  “[BUGÜNÜN TARİHİ] Günü Yemek Listesi”
-- Alt açıklama şu olabilir:
-  “Bugünkü menüleri kontrol edebilir, geçmiş ve gelecek kayıtları filtreleyebilirsiniz.”
-- Sağdaki “Menülere Git” butonu modern lacivert buton olsun.
+Genel kurallar:
+- Yeşil ton kullanılmasın.
+- Ana tema lacivert / koyu mavi olsun.
+- Dark mode’da yazılar soluk kalmasın.
+- Form inputları, tablo, kart, navbar, butonlar, filtre alanı ve login sayfası okunabilir olsun.
+- Placeholder yazıları çok koyu kalmasın.
+- Disabled gibi görünmeyen butonlar normal okunabilir olsun.
 
-5. Bugünün Menüleri kartları
-“Bugünün Menüleri” bölümündeki yemekler photo card formatında gösterilsin.
-Resimler şu an farklı boyutlarda görünüyor, bunu düzelt.
+CSS değişkenleri kullan:
+:root {
+  --bg: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-2: #F1F5F9;
+  --primary: #0B1F4D;
+  --primary-2: #1E3A8A;
+  --accent: #2563EB;
+  --text: #0F172A;
+  --muted: #64748B;
+  --border: #DBEAFE;
+}
 
-Her kart:
-- Aynı genişlikte ve aynı yükseklikte olmalı.
-- Resim alanı sabit yükseklikte olmalı. Örn: 220px.
-- Resimler object-fit: cover ile kırpılmalı.
-- Resim taşmamalı, kartı büyütmemeli.
-- Kartların köşeleri yuvarlak olmalı.
-- Shadow ve hover animasyonu olmalı.
-- Grid responsive olmalı:
-  - Desktop: 3 kart yan yana
-  - Tablet: 2 kart
-  - Mobil: 1 kart
+body.dark-mode {
+  --bg: #07172A;
+  --surface: #0F2138;
+  --surface-2: #142B47;
+  --primary: #60A5FA;
+  --primary-2: #3B82F6;
+  --accent: #60A5FA;
+  --text: #F8FAFC;
+  --muted: #CBD5E1;
+  --border: #274566;
+}
 
-Kart içinde:
-- Üstte yemek resmi
-- Resmin üzerinde küçük öğün etiketi: SABAH / ÖĞLE / AKŞAM
-- Altta yemek adı
-- Çorba
-- Ana yemek
-- Yardımcı yemek
-- Tatlı / içecek
-- Kalori
+Uygula:
+- body background: var(--bg)
+- card/form/table/filter area background: var(--surface)
+- text color: var(--text)
+- secondary text: var(--muted)
+- border: var(--border)
+- primary buttons: lacivert/mavi tonları
+- danger buttons kırmızı kalabilir
+- success/green class varsa laciverte çevir
 
-6. Resim gösterme
-Resimler database’de tutuluyor:
-- image_data longblob
-- image_content_type varchar(100)
-
-Mevcut image endpoint varsa onu kullan:
-GET /menus/image/{id}
-
-Yoksa oluştur:
-- Veritabanından imageData ve imageContentType çek.
-- ResponseEntity<byte[]> dön.
-- Content-Type doğru set edilsin.
-- Resim yoksa placeholder göster.
-
-Thymeleaf içinde resim:
-<img th:src="@{/menus/image/{id}(id=${menu.id})}" ...>
-
-7. Diğer sayfalar
-Aynı lacivert tema şuralara da uygulansın:
-- login
+Özellikle şu sayfaları kontrol et:
 - dashboard
-- menüler listesi
-- yeni menü
-- menü düzenleme
-- detay sayfası
+- menus/list
+- menus/create veya new menu
+- menus/edit
+- menus/detail
+- login
 
-8. Teknik sınırlar
-- Mevcut proje mimarisini bozma.
-- Gereksiz büyük refactor yapma.
-- Sadece gerekli dosyaları değiştir.
-- Kod okunabilir olsun.
-- CSS mümkünse tek ana dosyada toplansın.
-- JS mümkünse tek ana dosyada toplansın.
-- Thymeleaf fragment/navbar yapısı varsa tema toggle oraya eklensin.
+4. Login ve form ekranları
+- Dark mode’da input içleri okunabilir olmalı.
+- Label yazıları açık ve net olmalı.
+- Placeholder rengi görünür olmalı.
+- Sarımsı/soluk input background varsa kaldır.
+- Form kartı koyu lacivert ise yazılar beyaz/açık gri olmalı.
 
-9. Kontrol listesi
-İş bitince şunları doğrula:
-- Yeşil ton kalmadı mı?
-- Tema toggle güzel görünüyor mu?
-- Tema toggle çalışıyor mu?
-- localStorage ile tema korunuyor mu?
-- “null Günü Yemek Listesi” düzeldi mi?
-- Tarih dd/MM/yy formatında mı?
-- Menü resimleri aynı boyutta mı?
-- Kartlar responsive mi?
-- Dark mode’da tüm sayfalar okunabilir mi?
+5. Menü listesi tablosu
+- Dark mode’da tablo başlıkları, satırlar ve butonlar okunabilir olmalı.
+- Filtre alanındaki inputlar çok koyu yazı ile kaybolmamalı.
+- “Yeni Menü Ekle”, “Ara”, “Detay”, “Düzenle”, “Sil” butonları okunabilir olmalı.
+
+6. Tema toggle
+- Mevcut çalışan toggle bozulmasın.
+- Sadece renk uyumu gerekiyorsa düzelt.
+- localStorage davranışı korunmalı.
+
+Kontrol et:
+- Dashboard kartlarına tıklayınca doğru menü detayına gidiyor mu?
+- Resme tıklayınca image endpoint’e değil detay sayfasına gidiyor mu?
+- Hover sırasında resimler titriyor mu?
+- Dark mode’da tüm sayfalarda yazılar okunuyor mu?
+- Yeşil ton kaldı mı?
+- Light mode bozuldu mu?
+
+Sadece bu sorunları düzelt. Gereksiz yeni özellik ekleme.
