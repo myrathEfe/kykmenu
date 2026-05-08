@@ -3,6 +3,25 @@
 <head th:replace="~{fragments/header :: head('Giriş Yap')}"></head>
 <body class="login-page">
 <main class="container py-5">
+    <div class="login-theme-toggle">
+        <button type="button" class="theme-toggle theme-toggle--login" id="themeToggle" aria-label="Temayı değiştir">
+            <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3c0 5 3.79 8.79 8.79 8.79z"></path>
+                </svg>
+            </span>
+            <span class="theme-toggle__track" aria-hidden="true">
+                <span class="theme-toggle__thumb"></span>
+            </span>
+            <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <path d="M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77"></path>
+                </svg>
+            </span>
+            <span class="visually-hidden">Tema değiştir</span>
+        </button>
+    </div>
     <div class="row justify-content-center">
         <div class="col-lg-5 col-md-7">
             <div class="card border-0 shadow-lg login-card">

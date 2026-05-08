@@ -1,5 +1,5 @@
 <th:block xmlns:th="http://www.thymeleaf.org" th:fragment="navbar">
-<nav class="navbar navbar-expand-lg navbar-dark app-navbar shadow-sm">
+<nav class="navbar navbar-expand-lg app-navbar shadow-sm">
     <div class="container">
         <a class="navbar-brand fw-semibold" th:href="@{/dashboard}">KYK Menü Sistemi</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
@@ -19,12 +19,32 @@
                 </li>
             </ul>
 
-            <div class="d-flex align-items-center gap-3 text-white" th:if="${authenticated}">
+            <div class="d-flex align-items-center gap-2 navbar-actions">
+                <button type="button" class="theme-toggle" id="themeToggle" aria-label="Temayı değiştir">
+                    <span class="theme-toggle__icon theme-toggle__icon--moon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3c0 5 3.79 8.79 8.79 8.79z"></path>
+                        </svg>
+                    </span>
+                    <span class="theme-toggle__track" aria-hidden="true">
+                        <span class="theme-toggle__thumb"></span>
+                    </span>
+                    <span class="theme-toggle__icon theme-toggle__icon--sun" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="4"></circle>
+                            <path d="M12 2v2.5M12 19.5V22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M2 12h2.5M19.5 12H22M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77"></path>
+                        </svg>
+                    </span>
+                    <span class="visually-hidden">Tema değiştir</span>
+                </button>
+
+                <div class="d-flex align-items-center gap-3 session-chip" th:if="${authenticated}">
                 <span class="small">
                     <strong th:text="${currentUsername}">kullanici</strong>
-                    <span class="badge text-bg-light ms-2" th:text="${currentRole}">USER</span>
+                    <span class="badge role-chip ms-2" th:text="${currentRole}">USER</span>
                 </span>
-                <a class="btn btn-outline-light btn-sm" th:href="@{/logout}">Çıkış Yap</a>
+                    <a class="btn btn-outline-light btn-sm logout-button" th:href="@{/logout}">Çıkış Yap</a>
+                </div>
             </div>
         </div>
     </div>

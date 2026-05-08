@@ -4,64 +4,122 @@
 <body class="app-shell">
 <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<main class="container py-4">
-    <section class="hero-panel mb-4">
-        <div>
-            <span class="eyebrow">ÖĞRENCİ PANELİ</span>
-            <h1 class="display-6 fw-bold mt-2">KYK yemekhanesindeki günlük menüleri tek ekrandan takip et</h1>
-            <p class="lead text-secondary mb-0">Bugünkü menüleri kontrol edebilir, arama ekranından geçmiş veya gelecekteki kayıtları filtreleyebilirsin.</p>
+<main class="container dashboard-shell py-4 py-lg-5">
+    <section class="hero-panel dashboard-hero mb-4">
+        <div class="hero-copy">
+            <h1 class="hero-title mb-3" th:text="${(formattedTodayDate != null ? formattedTodayDate : '08/05/26')} + ' Günü Yemek Listesi'">08/05/26 Günü Yemek Listesi</h1>
+            <p class="hero-text mb-0">Bugünkü menüleri kontrol edebilir, geçmiş ve gelecek kayıtları filtreleyebilirsiniz.</p>
         </div>
-        <a th:href="@{/menus}" class="btn btn-primary btn-lg">Menülere Git</a>
+        <a th:href="@{/menus}" class="btn btn-primary hero-button">
+            <span class="hero-button__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+                    <path d="M16 2v4M8 2v4M3 10h18"></path>
+                </svg>
+            </span>
+            Menülere Git
+        </a>
     </section>
 
     <div class="alert alert-danger" th:if="${forbiddenMessage}" th:text="${forbiddenMessage}"></div>
 
     <section class="row g-4 mb-4">
         <div class="col-md-6">
-            <div class="card stat-card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <p class="text-secondary mb-2">Toplam Menü Kaydı</p>
-                    <h2 class="display-5 fw-bold mb-0" th:text="${totalMenuCount}">0</h2>
+            <div class="card stat-card border-0 h-100">
+                <div class="card-body stat-card__body">
+                    <div class="stat-card__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 12h6M9 16h6M9 8h6"></path>
+                            <path d="M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="stat-card__label mb-2">Toplam Menü Kaydı</p>
+                        <h2 class="stat-card__value mb-0" th:text="${totalMenuCount}">0</h2>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-md-6">
-            <div class="card stat-card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <p class="text-secondary mb-2">Bugünkü Menü Sayısı</p>
-                    <h2 class="display-5 fw-bold mb-0" th:text="${todayMenuCount}">0</h2>
+            <div class="card stat-card border-0 h-100">
+                <div class="card-body stat-card__body">
+                    <div class="stat-card__icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M8 2v20"></path>
+                            <path d="M16 2v20"></path>
+                            <path d="M3 5h5"></path>
+                            <path d="M16 5h5"></path>
+                            <path d="M3 12h5"></path>
+                            <path d="M16 12h5"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="stat-card__label mb-2">Bugünkü Menü Sayısı</p>
+                        <h2 class="stat-card__value mb-0" th:text="${todayMenuCount}">0</h2>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <section class="card dashboard-section border-0">
+        <div class="card-body p-4 p-lg-4">
+            <div class="section-header d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
                 <div>
-                    <h3 class="h5 mb-1">Bugünün Menüleri</h3>
-                    <p class="text-secondary mb-0">Kayıt yoksa filtreleme ekranından farklı tarihlere bakabilirsin.</p>
+                    <h3 class="section-title mb-2">Bugünün Menüleri</h3>
+                    <p class="section-subtitle mb-0">Kayıt yoksa filtreleme ekranından farklı tarihlere bakabilirsin.</p>
                 </div>
-                <a th:href="@{/menus}" class="btn btn-outline-primary btn-sm">Tüm Kayıtları Gör</a>
+                <a th:href="@{/menus}" class="btn btn-outline-primary section-link">Tüm Kayıtları Gör</a>
             </div>
 
             <div th:if="${#lists.isEmpty(todayMenus)}" class="empty-state">
                 Bugün için kayıtlı menü bulunmuyor.
             </div>
 
-            <div class="row g-3" th:if="${!#lists.isEmpty(todayMenus)}">
-                <div class="col-lg-4" th:each="menu : ${todayMenus}">
-                    <div class="menu-mini-card h-100">
-                        <div class="d-flex justify-content-between align-items-start gap-3">
-                            <div>
-                                <span class="badge text-bg-primary" th:text="${menu.mealType}">OGLE</span>
-                                <h4 class="h6 mt-3 mb-1" th:text="${menu.mainDish}">Ana Yemek</h4>
-                                <p class="small text-secondary mb-2" th:text="${menu.soup != null ? menu.soup : 'Çorba bilgisi girilmedi'}">Çorba</p>
+            <div class="row g-4" th:if="${!#lists.isEmpty(todayMenus)}">
+                <div class="col-12 col-md-6 col-xl-4" th:each="menu : ${todayMenus}">
+                    <article class="menu-mini-card h-100">
+                        <div class="menu-card-media">
+                            <img th:if="${menu.imageData != null}" th:src="@{/menus/image/{id}(id=${menu.id})}" class="menu-card-image" alt="Menü görseli">
+                            <div th:if="${menu.imageData == null}" class="menu-card-placeholder">
+                                Görsel eklenmedi
                             </div>
-                            <span class="calorie-pill" th:text="${menu.calories} + ' kcal'">0 kcal</span>
+                            <span class="meal-type-badge-overlay" th:text="${menu.mealType}">OGLE</span>
+                        </div>
+                        <div class="menu-card-body">
+                            <div class="menu-card-heading d-flex justify-content-between align-items-start gap-3 mb-3">
+                                <div>
+                                    <h4 class="menu-card-title mb-1" th:text="${menu.soup != null ? menu.soup : menu.mainDish}">Mercimek Çorbası</h4>
+                                    <p class="menu-card-subtitle mb-0">Günlük menü detayı</p>
+                                </div>
+                                <span class="calorie-pill" th:text="${menu.calories} + ' kcal'">650 kcal</span>
+                            </div>
+
+                            <div class="menu-card-details">
+                                <div class="menu-card-row">
+                                    <span class="menu-card-label">Çorba</span>
+                                    <span th:text="${menu.soup != null ? menu.soup : '-'}">-</span>
+                                </div>
+                                <div class="menu-card-row">
+                                    <span class="menu-card-label">Ana Yemek</span>
+                                    <span th:text="${menu.mainDish != null ? menu.mainDish : '-'}">-</span>
+                                </div>
+                                <div class="menu-card-row">
+                                    <span class="menu-card-label">Yardımcı Yemek</span>
+                                    <span th:text="${menu.sideDish != null ? menu.sideDish : '-'}">-</span>
+                                </div>
+                                <div class="menu-card-row">
+                                    <span class="menu-card-label">Tatlı / İçecek</span>
+                                    <span th:text="${menu.dessertOrDrink != null ? menu.dessertOrDrink : '-'}">-</span>
+                                </div>
+                                <div class="menu-card-row">
+                                    <span class="menu-card-label">Kalori</span>
+                                    <span th:text="${menu.calories} + ' kcal'">650 kcal</span>
+                                </div>
+                            </div>
                         </div>
                         <a class="stretched-link text-decoration-none" th:href="@{/menus/{id}(id=${menu.id})}"></a>
-                    </div>
+                    </article>
                 </div>
             </div>
         </div>
