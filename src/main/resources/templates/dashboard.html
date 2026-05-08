@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Dashboard')}"></head>
+<body class="app-shell">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="container py-4">
+    <section class="hero-panel mb-4">
+        <div>
+            <span class="eyebrow">ÖĞRENCİ PANELİ</span>
+            <h1 class="display-6 fw-bold mt-2">KYK yemekhanesindeki günlük menüleri tek ekrandan takip et</h1>
+            <p class="lead text-secondary mb-0">Bugünkü menüleri kontrol edebilir, arama ekranından geçmiş veya gelecekteki kayıtları filtreleyebilirsin.</p>
+        </div>
+        <a th:href="@{/menus}" class="btn btn-primary btn-lg">Menülere Git</a>
+    </section>
+
+    <div class="alert alert-danger" th:if="${forbiddenMessage}" th:text="${forbiddenMessage}"></div>
+
+    <section class="row g-4 mb-4">
+        <div class="col-md-6">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-secondary mb-2">Toplam Menü Kaydı</p>
+                    <h2 class="display-5 fw-bold mb-0" th:text="${totalMenuCount}">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card stat-card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <p class="text-secondary mb-2">Bugünkü Menü Sayısı</p>
+                    <h2 class="display-5 fw-bold mb-0" th:text="${todayMenuCount}">0</h2>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div>
+                    <h3 class="h5 mb-1">Bugünün Menüleri</h3>
+                    <p class="text-secondary mb-0">Kayıt yoksa filtreleme ekranından farklı tarihlere bakabilirsin.</p>
+                </div>
+                <a th:href="@{/menus}" class="btn btn-outline-primary btn-sm">Tüm Kayıtları Gör</a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(todayMenus)}" class="empty-state">
+                Bugün için kayıtlı menü bulunmuyor.
+            </div>
+
+            <div class="row g-3" th:if="${!#lists.isEmpty(todayMenus)}">
+                <div class="col-lg-4" th:each="menu : ${todayMenus}">
+                    <div class="menu-mini-card h-100">
+                        <div class="d-flex justify-content-between align-items-start gap-3">
+                            <div>
+                                <span class="badge text-bg-primary" th:text="${menu.mealType}">OGLE</span>
+                                <h4 class="h6 mt-3 mb-1" th:text="${menu.mainDish}">Ana Yemek</h4>
+                                <p class="small text-secondary mb-2" th:text="${menu.soup != null ? menu.soup : 'Çorba bilgisi girilmedi'}">Çorba</p>
+                            </div>
+                            <span class="calorie-pill" th:text="${menu.calories} + ' kcal'">0 kcal</span>
+                        </div>
+                        <a class="stretched-link text-decoration-none" th:href="@{/menus/{id}(id=${menu.id})}"></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>

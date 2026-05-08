@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head(${createMode} ? 'Yeni Menü' : 'Menü Güncelle')}"></head>
+<body class="app-shell">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="container py-4">
+    <section class="mb-4">
+        <span class="eyebrow" th:text="${createMode} ? 'YENİ MENÜ' : 'MENÜ GÜNCELLE'">YENİ MENÜ</span>
+        <h1 class="h2 fw-bold mb-1" th:text="${createMode} ? 'Yeni menü oluştur' : 'Menü kaydını düzenle'">Form</h1>
+        <p class="text-secondary mb-0">Zorunlu alanları doldur, istersen menü görseli yükle ve kaydı sakla.</p>
+    </section>
+
+    <section class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <form th:object="${menuForm}"
+                  th:action="${createMode} ? @{/menus} : @{/menus/{id}(id=${menuForm.id})}"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="row g-3"
+                  novalidate>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="date">Tarih</label>
+                    <input id="date" type="date" class="form-control" th:field="*{date}">
+                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('date')}" th:errors="*{date}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="mealType">Öğün Türü</label>
+                    <select id="mealType" class="form-select" th:field="*{mealType}">
+                        <option value="">Seçiniz</option>
+                        <option th:each="mealType : ${mealTypes}" th:value="${mealType}" th:text="${mealType}"></option>
+                    </select>
+                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('mealType')}" th:errors="*{mealType}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="soup">Çorba</label>
+                    <input id="soup" type="text" class="form-control" th:field="*{soup}" placeholder="Örn: Mercimek Çorbası">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="mainDish">Ana Yemek</label>
+                    <input id="mainDish" type="text" class="form-control" th:field="*{mainDish}" placeholder="Örn: Tavuk Sote">
+                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('mainDish')}" th:errors="*{mainDish}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="sideDish">Yardımcı Yemek</label>
+                    <input id="sideDish" type="text" class="form-control" th:field="*{sideDish}" placeholder="Örn: Pirinç Pilavı">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="dessertOrDrink">Tatlı / İçecek</label>
+                    <input id="dessertOrDrink" type="text" class="form-control" th:field="*{dessertOrDrink}" placeholder="Örn: Ayran">
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="calories">Kalori</label>
+                    <input id="calories" type="number" class="form-control" th:field="*{calories}" min="0" placeholder="Örn: 850">
+                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('calories')}" th:errors="*{calories}"></div>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label" for="imageFile">Menü Görseli</label>
+                    <input id="imageFile" type="file" class="form-control" th:field="*{imageFile}" accept=".jpg,.jpeg,.png">
+                    <div class="form-text" th:if="${hasImage}">Bu kayıt için daha önce yüklenmiş bir görsel bulunuyor. Yeni dosya seçmezsen mevcut görsel korunur.</div>
+                    <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('imageFileValid')}" th:errors="*{imageFileValid}"></div>
+                </div>
+
+                <div class="col-12">
+                    <label class="form-label" for="description">Açıklama</label>
+                    <textarea id="description" class="form-control" th:field="*{description}" rows="4" placeholder="Menü ile ilgili kısa açıklama ekleyebilirsin."></textarea>
+                </div>
+
+                <div class="col-12 d-flex gap-2 flex-wrap">
+                    <button type="submit" class="btn btn-primary" th:text="${createMode} ? 'Menüyü Kaydet' : 'Değişiklikleri Kaydet'">Kaydet</button>
+                    <a th:href="@{/menus}" class="btn btn-outline-secondary">İptal</a>
+                </div>
+            </form>
+        </div>
+    </section>
+</main>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Menü Detayı')}"></head>
+<body class="app-shell">
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<main class="container py-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+        <div>
+            <span class="eyebrow">MENÜ DETAYI</span>
+            <h1 class="h2 fw-bold mb-1" th:text="${menu.mainDish}">Ana Yemek</h1>
+            <p class="text-secondary mb-0">
+                <span th:text="${#temporals.format(menu.date, 'dd.MM.yyyy')}">01.01.2026</span>
+                <span> • </span>
+                <span th:text="${menu.mealType}">OGLE</span>
+            </p>
+        </div>
+        <div class="d-flex gap-2">
+            <a th:href="@{/menus}" class="btn btn-outline-primary">Listeye Dön</a>
+            <a th:if="${currentRole != null and currentRole.name() == 'ADMIN'}" th:href="@{/menus/{id}/edit(id=${menu.id})}" class="btn btn-primary">Düzenle</a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-3">
+                    <img th:if="${menu.imageData != null}" th:src="@{/menus/image/{id}(id=${menu.id})}" class="detail-image" alt="Menü görseli">
+                    <div th:if="${menu.imageData == null}" class="image-placeholder">
+                        Bu menü için görsel yüklenmedi.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="detail-box">
+                                <span class="detail-label">Çorba</span>
+                                <p class="mb-0" th:text="${menu.soup != null ? menu.soup : '-'}">-</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-box">
+                                <span class="detail-label">Yardımcı Yemek</span>
+                                <p class="mb-0" th:text="${menu.sideDish != null ? menu.sideDish : '-'}">-</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-box">
+                                <span class="detail-label">Tatlı / İçecek</span>
+                                <p class="mb-0" th:text="${menu.dessertOrDrink != null ? menu.dessertOrDrink : '-'}">-</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="detail-box">
+                                <span class="detail-label">Kalori</span>
+                                <p class="mb-0" th:text="${menu.calories} + ' kcal'">0 kcal</p>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="detail-box">
+                                <span class="detail-label">Açıklama</span>
+                                <p class="mb-0" th:text="${menu.description != null ? menu.description : 'Açıklama girilmedi.'}">Açıklama</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>
